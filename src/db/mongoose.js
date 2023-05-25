@@ -1,20 +1,74 @@
 const mongoose = require('mongoose')
+const validator = require('validator')
 
 mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',
  { useNewUrlParser: true })
 
- const User = mongoose.model('User', {
+const Tasks = mongoose.model('Tasks',{
+    description: {
+        type : String,
+        required : true,
+        trim : true
+    },
+    completed: {
+        type : Boolean,
+        default : false
+    } 
+})
+
+const task = new Tasks({
+    description : '   Learn Vue.js',
+   
+})
+task.save().then(console.log(task)).catch(err => console.error(err))
+
+  const User = mongoose.model('User', {
     name: {
-        type: String
+        type: String ,
+        required: true,
+        trim: true
+    },
+    email: {
+        type: String ,
+        required: true,
+        trim: true ,
+        lowercase : true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error('invalid Email that you provide .')
+            }
+        }
+    },
+    password: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 7,
+        validate(value) {
+            // if (value.length <= 6) {
+            //     throw new Error ('The Password most be 7 character')
+            // }
+            if (value.tolowercase().includes('password')) {
+                throw new Error ('You can not provide the word Password !')
+            }
+        }
+
     },
     age: {
-        type: Number
-    }
+        type: Number,
+        default: 0,
+        validate(value) {
+        if (value < 0) {
+            throw new Error('Age must be a positive number .')
+        }
+    }}
 })
 
 const me = new User({
-    name: 'Muhammed',
-    age: 26
+    name: 'Muhammed Lagha',
+    email: '   muhaMMed.lagha@gmail.com',
+    password: 'pass123'
+
 })
 
 me.save().then(() => {
@@ -22,31 +76,3 @@ me.save().then(() => {
 }).catch((error) => {
     console.log('Error!', error)
 })
-
-
-// const connectDB = async () => {
-//     const conn = await mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',
-//         {
-//             useNewUrlParser: true,
-//             useCreateIndex: true
-//         })
-        
-//     console.log(`MongoDB Connected: ${conn.connection.host}`);
-
-//     const User = await mongoose.model('User', {
-//         name: { type: String },
-//         age : { type: Number }
-//     })
-//     const me = new User({
-//         name: "Muhammed",
-//         age : 26
-//     })
-
-//     console.log(me)
-
-//     return 'Done . '
-// };
-
-// connectDB().then(console.log).catch(console.error)
-
-// module.exports = connectDB;
