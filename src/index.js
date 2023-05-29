@@ -20,7 +20,7 @@ app.post('/users', async (req, res) => {
     res.status(404).send(error)
   }  
 })
-
+// find users 
 app.get('/users', async (req, res) => {
   
   try {
@@ -30,7 +30,7 @@ app.get('/users', async (req, res) => {
     res.status(404).send(error)
   }
 })
-
+// find user by id
 app.get('/users/:userId', async (req, res) => {
 try {
   const _id = req.params.userId
@@ -44,6 +44,25 @@ try {
 } catch (error) {
   res.status(500).send('Error')
 }  
+})
+
+// update user 
+app.patch('/users/:userId', async (req, res) => {
+  const updates = Object.keys(req.body)
+  const allowedUpdates = ['name', 'email', 'password', 'age']
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+  if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' })
+
+  const _id = req.params.userId
+  try {
+    const user = await User.findByIdAndUpdate(_id ,req.body ,{ new: true ,runValidators: true })
+    if (!user) return res.status(400).send()
+    res.send(user)
+
+  } catch (error) {
+    res.status(400).send(error)
+  }
 })
 
 app.post('/tasks', async (req, res) => {
@@ -77,5 +96,23 @@ app.get('/tasks/:taskId', async (req, res) => {
     res.status(500).send('Error')
   }
   })
+
+// update Task
+app.patch('/tasks/:taskId', async (req, res) => {
+  const updates = Object.keys(req.body)
+  const allowedUpdates = ['description' ,'completed']
+  const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+  if (!isValidOperation) return res.status(400).send({ error: 'Invalid updates!' })
+  
+  const _id = req.params.taskId
+  try {
+    const updateTask = await Tasks.findByIdAndUpdate(_id ,req.body ,{new: true ,runValidators: true})
+  if (!updateTask) return res.status(404).send()
+  return res.send(updateTask)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
