@@ -6,8 +6,15 @@ const Tasks = require('./models/task.js')
 const app = express()
 const port = process.env.PORT || 3000
 
-// app.get('/', (req, res) => res.send('Hello World!'))
 app.use(express.json())
+
+// const router = new express.Router()
+
+// router.get('/', (req, res) => {
+//   res.send('GET request to the homepage')
+// })
+// app.use(router)
+
 
 app.post('/users', async (req, res) => {
    
@@ -65,6 +72,21 @@ app.patch('/users/:userId', async (req, res) => {
   }
 })
 
+// Delete User
+app.delete('/users/:userId', async (req, res) => {
+  const _id = req.params.userId
+  try {
+    const user = await User.findByIdAndDelete(_id)
+
+  if(!user) return res.status(404).send()
+
+  res.send(user)
+
+  } catch (err) {
+    req.status(500).send(err)
+  }
+})
+
 app.post('/tasks', async (req, res) => {
   const task = new Tasks(req.body)
   try {
@@ -112,6 +134,21 @@ app.patch('/tasks/:taskId', async (req, res) => {
   return res.send(updateTask)
   } catch (error) {
     res.status(400).send(error)
+  }
+})
+
+// delete Task
+app.delete('/tasks/:id', async (req, res) => {
+  try {
+      const task = await Tasks.findByIdAndDelete(req.params.id)
+
+      if (!task) {
+          res.status(404).send()
+      }
+
+      res.send(task)
+  } catch (e) {
+      res.status(500).send(e)
   }
 })
 
