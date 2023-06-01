@@ -49,7 +49,10 @@ router.patch('/users/:userId', async (req, res) => {
 
   const _id = req.params.userId
   try {
-    const user = await User.findByIdAndUpdate(_id ,req.body ,{ new: true ,runValidators: true })
+    const user = await User.findByIdAndUpdate(_id)
+    updates.forEach((update) => user[update] = req.body[update])
+    await user.save()
+    
     if (!user) return res.status(400).send()
     res.send(user)
 
