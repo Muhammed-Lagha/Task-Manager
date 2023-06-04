@@ -33,6 +33,31 @@ router.get('/users/me' ,auth ,async (req, res) => {
  res.send(req.user)
 
 })
+
+// logout router
+router.post('/users/logout', auth ,async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+        return token.token !== req.token
+    })
+    await req.user.save()
+
+    res.send()
+} catch (e) {
+    res.status(500).send()
+}
+})
+
+// logout All Users
+router.post('/users/logoutAll', auth , async(req ,res) => {
+  try {
+    req.user.tokens = []
+    await req.user.save()
+  } catch (error) {
+    res.status(500).send()
+  }
+})
+
 // find user by id
 router.get('/users/:userId', async (req, res) => {
 try {
