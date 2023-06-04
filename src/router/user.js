@@ -1,6 +1,7 @@
 const express = require('express')
 const router = new express.Router
 const User = require('../models/user')
+const auth = require('../middleware/auth')
 
 router.post('/users', async (req, res) => {
    
@@ -26,15 +27,11 @@ router.post('/users/login', async (req, res) => {
   }
 })
 
-// find users 
-router.get('/users', async (req, res) => {
+// find user profile 
+router.get('/users/me' ,auth ,async (req, res) => {
   
-  try {
-    const users = await User.find()
-    res.status(200).send(users)
-  } catch (error) {
-    res.status(404).send(error)
-  }
+ res.send(req.user)
+
 })
 // find user by id
 router.get('/users/:userId', async (req, res) => {
