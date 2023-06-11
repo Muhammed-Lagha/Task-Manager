@@ -20,23 +20,11 @@ app.use(taskRouter)
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
-// const bcrypt = require('bcryptjs')
+const Task = require('./models/task.js')
 
-// const myFunction = async () => {
-//   const password = 'blue123456@'
-//   const hashedPassword = await bcrypt.hash(password ,8)
-//   console.log(password)
-//   console.log(hashedPassword)
-// } 
-// myFunction()
-
-// const jwt = require('jsonwebtoken')
-
-// const myFunction = async () => {
-//   const token = jwt.sign({ _id: '1234Tas' }, 'ThisIsMyToToken')
-//   console.log(token)
-
-//   const data = jwt.verify(token ,'ThisIsMyToToken')
-//   console.log(data)
-// }
-// myFunction()
+const main = async () => {
+  // const task = await Task.findById('64836c16c1dcb0362799834e')
+  // await task.populate('author').execPopulate()
+  // console.log(task.other) 
+}
+main()
