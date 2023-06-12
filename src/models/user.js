@@ -52,6 +52,12 @@ const userSchema = new mongoose.Schema({
     }]
 })
 
+userSchema.virtual('tasks' ,{
+    ref: 'Tasks',
+    localField: '_id',
+    foreignField: 'author'
+})
+
 // Hiding tokens and password 
 userSchema.methods.toJSON = function () {
     const user = this
