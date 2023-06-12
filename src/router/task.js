@@ -19,9 +19,9 @@ router.post('/tasks' ,auth ,async (req, res) => {
   })
 
 // find Task
-router.get('/tasks', async (req, res) => {
+router.get('/tasks', auth ,async (req, res) => {
     try {
-      const tasks = await Tasks.find()
+      const tasks = await Tasks.find({author : req.user._id})
       res.status(200).send(tasks)
     } catch (error) {
       res.status(500).send(error)
@@ -29,10 +29,10 @@ router.get('/tasks', async (req, res) => {
   })
 
 // find Task by Id
-router.get('/tasks/:taskId', async (req, res) => {
+router.get('/tasks/:taskId', auth ,async (req, res) => {
     const _id = req.params.taskId
     try {
-      const taskId = await Tasks.findById(_id)
+      const taskId = await Tasks.findOne({_id , author: req.user._id})
         if (!taskId) {
             res.status(404).send()
         }
@@ -43,7 +43,7 @@ router.get('/tasks/:taskId', async (req, res) => {
     })
   
 // update Task
-router.patch('/tasks/:taskId', async (req, res) => {
+router.patch('/tasks/:taskId', auth ,async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['description' ,'completed']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
@@ -53,10 +53,14 @@ router.patch('/tasks/:taskId', async (req, res) => {
     const _id = req.params.taskId
     try {
       // const updateTask = await Tasks.findByIdAndUpdate(_id ,req.body ,{new: true ,runValidators: true})
-      const updateTask = await Tasks.findByIdAndUpdate(_id)
+      const updateTask = await Tasks.findOne({_id , author:req.user._id})
+      
+      if (!updateTask) return res.status(404).send()
+
       updates.forEach((update) => updateTask[update] = req.body[update])
+      
       await updateTask.save()
-    if (!updateTask) return res.status(404).send()
+    
     return res.send(updateTask)
     } catch (error) {
       res.status(400).send(error)
@@ -64,13 +68,12 @@ router.patch('/tasks/:taskId', async (req, res) => {
   })
   
 // delete Task
-router.delete('/tasks/:id', async (req, res) => {
+router.delete('/tasks/:id', auth ,async (req, res) => {
     try {
-        const task = await Tasks.findByIdAndDelete(req.params.id)
+        //const task = await Tasks.findByIdAndDelete(req.params.id)
+        const task = await Tasks.findOneAndDelete({_id: req.params.id ,author: req.user._id})
   
-        if (!task) {
-            res.status(404).send()
-        }
+        if (!task) return res.status(404).send()
   
         res.send(task)
     } catch (e) {
