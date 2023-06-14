@@ -12,7 +12,7 @@ router.post('/users', async (req, res) => {
     const token = await user.generateAuthToken()
     res.status(201).send({newUser ,token})
   } catch (error) {
-    res.status(404).send(error)
+    res.status(404).json({ message: 'Server error' })
   }  
 })
 
@@ -23,7 +23,7 @@ router.post('/users/login', async (req, res) => {
     const token = await user.generateAuthToken()
     res.send({token ,user})
   } catch (error) {
-    res.status(400).send({ error: 'Invalid login credentials' })
+    res.status(400).json({ error: 'Invalid login credentials' })
   }
 })
 
@@ -44,7 +44,7 @@ router.post('/users/logout', auth ,async (req, res) => {
 
     res.send()
 } catch (e) {
-    res.status(500).send()
+    res.status(500).json({ message: 'Server error' })
 }
 })
 
@@ -54,7 +54,7 @@ router.post('/users/logoutAll', auth , async(req ,res) => {
     req.user.tokens = []
     await req.user.save()
   } catch (error) {
-    res.status(500).send()
+    res.status(500).json({ message: 'Server error' })
   }
 })
 
@@ -71,7 +71,7 @@ router.patch('/users/me', auth ,async (req, res) => {
     await req.user.save()
     res.send(req.user)
   } catch (e) {
-    res.status(400).send(e)
+    res.status(500).json({ message: 'Server error' })
   }
 })
 
@@ -79,9 +79,9 @@ router.patch('/users/me', auth ,async (req, res) => {
 router.delete('/users/me', auth, async (req, res) => {
   try {
       await req.user.remove()
-      res.send(req.user)
+      res.json({ message: 'User deleted successfully' })
   } catch (e) {
-      res.status(500).send()
+      res.status(500).json({ message: 'Server error' })
   }
 })
 
