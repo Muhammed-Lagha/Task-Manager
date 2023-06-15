@@ -2,6 +2,7 @@ const express = require('express')
 const auth = require('../middleware/auth')
 const router = new express.Router
 const Tasks = require('../models/task.js')
+const { find } = require('../models/user')
 
 // Create Task
 router.post('/tasks' ,auth ,async (req, res) => {
@@ -18,13 +19,20 @@ router.post('/tasks' ,auth ,async (req, res) => {
     }
   })
 
-// find Task
+// Get All Tasks
 router.get('/tasks', auth ,async (req, res) => {
+  const completed = req.query.completed
+
+  const filter = {}
+  if (completed) {
+    filter.completed = completed === 'true'
+  }
+
     try {
-      const tasks = await Tasks.find({author : req.user._id})
+      const tasks = await Tasks.find({filter ,author : req.user._id})
       res.status(200).send(tasks)
     } catch (error) {
-      res.status(500).send(error)
+      res.status(500).json({ message: 'Server error' })
     }
   })
 
@@ -34,11 +42,11 @@ router.get('/tasks/:taskId', auth ,async (req, res) => {
     try {
       const taskId = await Tasks.findOne({_id , author: req.user._id})
         if (!taskId) {
-            res.status(404).send()
+            res.status(404).json({ message: 'Error ,Task not found' })
         }
         return res.send(taskId)
     } catch (error) {
-      res.status(500).send('Error')
+      res.status(500).json({ message: 'Server error' })
     }
     })
   
