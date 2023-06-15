@@ -2,7 +2,6 @@ const express = require('express')
 const auth = require('../middleware/auth')
 const router = new express.Router
 const Tasks = require('../models/task.js')
-const { find } = require('../models/user')
 
 // Create Task
 router.post('/tasks' ,auth ,async (req, res) => {
