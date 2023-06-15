@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 // const validator = require('validator')
 
-const Tasks = mongoose.model('Tasks',{
+const TasksSchema = mongoose.Schema({
     description: {
         type : String,
         required : true,
@@ -17,7 +17,10 @@ const Tasks = mongoose.model('Tasks',{
         ref : 'User'
     }
     
-    //<issue_comment>username_1: @username_0 I think you're missing the `new` keyword.
+}, {
+    timestamps: true
 })
 
-module.exports = Tasks
+const Task = mongoose.model('Task' ,TasksSchema )
+
+module.exports = Task
