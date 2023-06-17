@@ -32,3 +32,20 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 //   console.log(user.tasks)
 // }
 // main()
+
+// bcrypt js 
+// const bcrypt = require('bcryptjs');
+// const saltRounds = 8;
+
+// // hash the password
+// const password = 'pass23421';
+
+// const hash = '$2a$08$L/tAbSBh.qlqsOfLeiv2e.mf4Ps.a07vbjsiE4Uy6lnNjdNVYbrla'
+// // verify the password
+// bcrypt.compare(password, hash, function(err, result) {
+//   if (result) {
+//     console.log('Password is correct');
+//   } else {
+//     console.log('Password is incorrect');
+//   }
+// });
