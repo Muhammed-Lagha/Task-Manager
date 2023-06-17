@@ -20,16 +20,16 @@ router.post('/tasks' ,auth ,async (req, res) => {
 
 // Get All Tasks
 router.get('/tasks', auth ,async (req, res) => {
-  const completed = req.query.completed
+  
 
-  const filter = {}
-  if (completed) {
-    filter.completed = completed === 'true'
+  let filter = {}
+  if (req.query.completed !== undefined) {
+    filter.completed = req.query.completed === 'true'
   }
 
     try {
-      const tasks = await Tasks.find({filter ,author : req.user._id})
-      res.status(200).send(tasks)
+      const tasks = await Tasks.find({...filter ,author : req.user._id})
+      res.status(200).send({tasks})
     } catch (error) {
       res.status(500).json({ message: 'Server error' })
     }
