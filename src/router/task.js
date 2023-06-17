@@ -28,7 +28,10 @@ router.get('/tasks', auth ,async (req, res) => {
   }
 
     try {
-      const tasks = await Tasks.find({...filter ,author : req.user._id})
+      const tasks = await Tasks.find({
+        ...filter ,
+        author : req.user._id,
+      }).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
       res.status(200).send({tasks})
     } catch (error) {
       res.status(500).json({ message: 'Server error' })
