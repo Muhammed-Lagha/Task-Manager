@@ -107,10 +107,14 @@ userSchema.pre('save' , async function (next) {
 })
 
 // Delete user tasks when user deleted
-userSchema.pre('remove', async function (next) {
-    await Tasks.deleteMany({ author: this._id })
-    next()
-})
+userSchema.pre('remove', async function(next) {
+    try {
+      await Tasks.deleteMany({ author: this._id })
+      next()
+    } catch (e) {
+      next(e)
+    }
+  })
 
 const User = mongoose.model('User' ,userSchema )
 
