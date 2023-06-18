@@ -77,15 +77,10 @@ router.patch('/users/me', auth ,async (req, res) => {
 })
 
 // Delete User {for now}
-router.delete('/users/:id', auth, async (req, res) => {
+router.delete('/users/me', auth, async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json({ message: 'User deleted successfully' });
+    await req.user.deleteOne()
+    res.json({ message: 'User deleted successfully'});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
