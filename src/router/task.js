@@ -19,19 +19,30 @@ router.post('/tasks' ,auth ,async (req, res) => {
   })
 
 // Get All Tasks
+// GET /tasks?completed=true
+// GET /tasks?limit= &skip= 
+// GET /tasks?sortBy=createdAt:desc
 router.get('/tasks', auth ,async (req, res) => {
   
 
   let filter = {}
+  let sort = {}
   if (req.query.completed !== undefined) {
     filter.completed = req.query.completed === 'true'
   }
+ 
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(':')
+    sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
+}
 
     try {
       const tasks = await Tasks.find({
         ...filter ,
         author : req.user._id,
-      }).limit(parseInt(req.query.limit)).skip(parseInt(req.query.skip))
+      }).limit(parseInt(req.query.limit))
+      .skip(parseInt(req.query.skip))
+      .sort(sort)
       res.status(200).send({tasks})
     } catch (error) {
       res.status(500).json({ message: 'Server error' })
