@@ -7,6 +7,15 @@ const taskRouter = require('./router/task.js')
 const app = express()
 const port = process.env.PORT || 3000
 
+const multer  = require('multer')
+const upload = multer({ dest: 'images' })
+
+app.post('/upload', upload.single('uploaded_file'), function (req, res) {
+    res.send() 
+    //console.log(req.file, req.body)
+ })
+
+
 // shat down the server
 // app.use((req ,res ,nex) => {
 //     res.status(503).send('The Site is Under maintenance Now ,Try Back Soon')
