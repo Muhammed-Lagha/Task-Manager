@@ -1,7 +1,10 @@
 const express = require('express')
-const router = new express.Router
+const multer = require('multer')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
+const router = new express.Router
+
+
 
 router.post('/users', async (req, res) => {
    
@@ -85,6 +88,12 @@ router.delete('/users/me', auth, async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
+})
+
+const avatar = multer({ dest: 'avatar' })
+// Setup endpoint for avatar upload
+router.post('/users/me/avatar', auth, avatar.single('avatar') ,async (req, res) => {
+  res.json({ message: 'Avatar Uploaded'})
 })
 
 
