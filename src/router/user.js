@@ -90,7 +90,19 @@ router.delete('/users/me', auth, async (req, res) => {
   }
 })
 
-const avatar = multer({ dest: 'avatar' })
+const avatar = multer({ 
+  dest: 'avatar' ,
+  limits: {
+    fieldSize: 1000000
+  },
+  fileFilter (req ,file ,cb) {
+    
+    
+    // cb(new Error('file must be image !'))
+    // cb(undefined ,true)
+    // cb(undefined ,false)
+  }
+})
 // Setup endpoint for avatar upload
 router.post('/users/me/avatar', auth, avatar.single('avatar') ,async (req, res) => {
   res.json({ message: 'Avatar Uploaded'})
