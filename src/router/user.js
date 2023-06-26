@@ -96,10 +96,9 @@ const avatar = multer({
     fieldSize: 1000000
   },
   fileFilter (req ,file ,cb) {
+    if(!file.originalname.match(/\.(jpg|png|jfif)/)) return cb(new Error('file must be image !'))
     
-    
-    // cb(new Error('file must be image !'))
-    // cb(undefined ,true)
+     cb(undefined ,true)
     // cb(undefined ,false)
   }
 })
